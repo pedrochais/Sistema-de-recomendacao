@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class AVLAdaptado{
     private int quantidade_nos = 0;
+    private ArrayList<String> keys = new ArrayList<>();
 
     public class Node{
         String chave;
@@ -69,21 +70,47 @@ public class AVLAdaptado{
         preorder(raiz);
     }
 
+//    private void printPreorder(Node r){ // Aqui é onde a árvore vai ser printada
+//        if (r != null){
+//
+//            //System.out.print("{"+r.chave+"}");
+//
+//            for (ParOcorrenciasID item : r.getPares()) {
+//                int id = (Integer) item.getIDProduto();
+//                System.out.print(" -> ");
+//                System.out.print("(" + item.getOcorrencias() + ", " + id + ")");
+//            }
+//            System.out.println();
+//
+//
+//            printPreorder(r.left);
+//            printPreorder(r.right);
+//        }
+//    }
+
     private void preorder(Node r){ // Aqui é onde a árvore vai ser printada
         if (r != null){
-            System.out.print("{"+r.chave+"}");
-
-            for (ParOcorrenciasID item : r.getPares()) {
-                int id = (Integer) item.getIDProduto();
-                System.out.print(" -> ");
-                System.out.print("(" + item.getOcorrencias() + ", " + id + ")");
-            }
-            System.out.println();
-
+            this.keys.add(r.getChave());
 
             preorder(r.left);
             preorder(r.right);
         }
+    }
+
+//    private ArrayList<String> insertKeysList(Node r){
+//        if (r != null){
+//            this.keys.add(r.getChave());
+//
+//            preorder(r.left);
+//            preorder(r.right);
+//        }
+//        return keys;
+//    }
+
+    public ArrayList<String> getKeys() {
+        this.keys.clear();
+        preorder(pegaRaiz(""));
+        return this.keys;
     }
 
     private Node insere(Node node, String chave, ArrayList<ParOcorrenciasID> pares){

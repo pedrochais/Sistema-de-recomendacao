@@ -4,20 +4,25 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RelevanciaV3 {
-    private int quantidade_produtos_dataset_geral;
+public class RelevanciaGeral {
+    private int quantidade_produtos_dataset_geral; // [LEMBRETE] Está considerando a linha com a identificação das colunas
     private int quantidade_produtos_dataset_atual;
+    private Object indice_invertido;
 
     /* Antes de iniciar o cálculo da relevância devem ser observados os seguintes pntos
      * 1. Todas as letras devem estar minúsculas
      * 2. Todos os caracteres especiais devem ser retirados
      * */
 
-    public boolean calcular(String termos_consulta[], Map<String, ArrayList<ParOcorrenciasID>> indice, ArrayList<String> dataset){
+    public RelevanciaGeral(Object indice_invertido){
+        this.indice_invertido = indice_invertido;
+    }
+
+    public boolean calcular(String termos_consulta[], ArrayList<String> dataset){
         // Laço para verificar se o termo existe no índice invertido
         ArrayList<String> termos_validos = new ArrayList<>();
         for (String termo : termos_consulta){
-            if(indice.get(termo) != null){
+            if(getListPairs(termo) != null){
                 termos_validos.add(termo);
 //                System.out.println(termo);
             }
@@ -35,9 +40,9 @@ public class RelevanciaV3 {
         // Este bloco será executado quando houver apenas um termo na consulta
         if (termos.length == 1) {
             String termo = termos[0];
-            for (ParOcorrenciasID par : indice.get(termo)) { // Para cada par (descrição) associado ao termo será feito o cálculo da relevância
+            for (ParOcorrenciasID par : getListPairs(termo)) { // Para cada par (descrição) associado ao termo será feito o cálculo da relevância
                 int id = (Integer) par.getIDProduto();
-                inserirDados(dataset.size(), indice.get(termo).size());
+                inserirDados(dataset.size() - 1, getListPairs(termo).size());
 
                 double rel = calcularRelevancia(dataset.get(id), termos);
 
@@ -59,12 +64,12 @@ public class RelevanciaV3 {
             // Calculo da intersecção [INICIO]
             for (String termo : termos) { // Para cada termo
                 if (!primeira_lista_copiada) {
-                    for (ParOcorrenciasID par : indice.get(termo)) { // Para cada lista de cada termo
+                    for (ParOcorrenciasID par : getListPairs(termo)) { // Para cada lista de cada termo
                         lista_auxiliar.add((Integer) par.getIDProduto()); // Cópia da primeira lista para a lista auxiliar
                     }
                     primeira_lista_copiada = true;
                 } else {
-                    for (ParOcorrenciasID par : indice.get(termo)) { // Para cada lista de cada termo
+                    for (ParOcorrenciasID par : getListPairs(termo)) { // Para cada lista de cada termo
                         for (Integer item : lista_auxiliar) {
                             if (((Integer) par.getIDProduto()).equals(item)) { // Se true é porque o par em questão existe nos dois conjuntos, adiciona-o na lista interseccao
                                 interseccao.add((Integer) par.getIDProduto());
@@ -143,19 +148,36 @@ public class RelevanciaV3 {
 
         int palavras_distintas = palavras_identificadas.split(" ").length;
 
+        System.out.println("Número de palavras distintas na frase: "+palavras_distintas);
+
         return palavras_distintas;
-    }
-
-    public void inserirDados(int qt_geral, int qt_atual){
-        this.quantidade_produtos_dataset_atual = qt_atual;
-        this.quantidade_produtos_dataset_geral = qt_geral;
-    }
-
-    private void identificarTermosRelevantes(String descricao){
-        //String stopwords[] = {""}
     }
 
     private double log(double base, double valor) {
         return Math.log(valor) / Math.log(base);
     }
+
+    private ArrayList<ParOcorrenciasID> getListPairs(String termo) {
+        if (indice_invertido instanceof Map) {
+            Map<String, ArrayList<ParOcorrenciasID>> indice = (Map) this.indice_invertido;
+            return indice.get(termo);
+        } else if (indice_invertido instanceof AVLAdaptado) {
+            AVLAdaptado indice = (AVLAdaptado) this.indice_invertido;
+            return indice.busca(termo).getPares();
+        } else {
+            System.out.println("[indiceContemChave] Não identificou nenhum tipo");
+            return null;
+        }
+    }
+
+    private void inserirDados(int qt_geral, int qt_atual){
+        this.quantidade_produtos_dataset_atual = qt_atual;
+        this.quantidade_produtos_dataset_geral = qt_geral;
+    }
+
+    public void getDados(){
+        System.out.println("N = "+this.quantidade_produtos_dataset_geral+" / d = "+this.quantidade_produtos_dataset_atual);
+
+    }
 }
+

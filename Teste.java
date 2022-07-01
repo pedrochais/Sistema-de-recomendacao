@@ -4,12 +4,6 @@ public class Teste {
     public static void main(String args[]){
         AVLAdaptado arvore = new AVLAdaptado();
 
-//        String s1 = "amoeba";
-//        String s2 = "beheli";
-//
-//        int saida = ((s1).compareTo(s2));
-//        System.out.println(saida);
-
         ArrayList<ParOcorrenciasID> lista1 = new ArrayList<>();
         ArrayList<ParOcorrenciasID> lista2 = new ArrayList<>();
         ArrayList<ParOcorrenciasID> lista3 = new ArrayList<>();
@@ -26,12 +20,17 @@ public class Teste {
         arvore.insere("teste", lista3);
 
 
-        arvore.busca("pedro");
-        arvore.busca("behelit");
-        arvore.busca("amoeba");
-        arvore.busca("teste");
+        //arvore.busca("pedro");
+        //arvore.busca("behelit");
+        //arvore.busca("amoeba");
+        //arvore.busca("teste");
 
-        arvore.preorder();
+        //arvore.preorder();
+
+        ArrayList<String> l = arvore.getKeys();
+        for (String t : l){
+            System.out.println(t);
+        }
 
 
         //System.out.println(arvore.pegaRaiz("").getChave());
