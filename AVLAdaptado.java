@@ -25,27 +25,26 @@ public class AVLAdaptado{
         }
     }
 
-    public Node pegaRaiz(String chave){
+    public Node getRaiz(String chave){
         return raiz;
     }
 
     public ArrayList<String> getKeys() {
         this.keys.clear();
-        preorder(pegaRaiz(""));
+        inorder(raiz);
         return this.keys;
     }
 
-    // Identificar as chaves em pre-ordem
-    public void preorder(){
-        preorder(raiz);
+    // Identificar as chaves em ordem
+    public void inorder() {
+        inorder(raiz);
     }
 
-    private void preorder(Node r){
-        if (r != null){
+    private void inorder(Node r) {
+        if (r != null) {
+            inorder(r.left);
             this.keys.add(r.getChave());
-
-            preorder(r.left);
-            preorder(r.right);
+            inorder(r.right);
         }
     }
 

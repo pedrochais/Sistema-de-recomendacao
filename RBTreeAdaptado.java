@@ -44,7 +44,7 @@ public class RBTreeAdaptado {
     // Pegar todas as chaves contidas na árvore
     public ArrayList<String> getKeys() {
         this.keys.clear();
-        preorder();
+        inorder();
         return this.keys;
     }
 
@@ -63,6 +63,7 @@ public class RBTreeAdaptado {
     }
 
     // Identificar as chaves em pre-ordem
+    /*
     public void preorder() {
         preorder(raiz);
     }
@@ -72,6 +73,20 @@ public class RBTreeAdaptado {
             this.keys.add(node.chave);
             preorder(node.left);
             preorder(node.right);
+        }
+    }
+    */
+    // Identificar as chaves em ordem
+    public void inorder() {
+        inorder(raiz);
+    }
+
+    private void inorder(RBNode r) {
+        if (r != TNULL)
+        {
+            inorder(r.left);
+            this.keys.add(r.getChave());
+            inorder(r.right);
         }
     }
 

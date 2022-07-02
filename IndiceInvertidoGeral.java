@@ -32,7 +32,7 @@ public class IndiceInvertidoGeral {
 
         for (String termo : termos) {
             // Caso o termo atual não tenha X termos ou mais passa para o próximo
-            if (!(termo.length() >= 1)) continue;
+            if (!(termo.length() >= Main.C)) continue;
 
             if (indexContainsKey(termo)) {
                 // Se termo ja existe na lista
@@ -81,6 +81,10 @@ public class IndiceInvertidoGeral {
     }
 
     public void printarEstrutura() { // Verificar a estrutura
+        if(indice_invertido instanceof Map) System.out.println("Imprimindo índice invertido do Hash");
+        else if(indice_invertido instanceof AVLAdaptado) System.out.println("Imprimindo índice invertido da Árvore AVL");
+        else if(indice_invertido instanceof RBTreeAdaptado) System.out.println("Imprimindo índice invertido da Árvore Rubro-Negra");
+        else System.out.println("[printarEstrutura] Não identificou nenhum tipo");
         for (String key : getKeys()) {
             System.out.print("{" + key + "}");
             ArrayList<ParOcorrenciasID> lista = getListPairs(key);
@@ -92,6 +96,8 @@ public class IndiceInvertidoGeral {
             }
             System.out.println();
         }
+
+        System.out.println("Quantidade de termos no índice: "+getKeys().size());
     }
 
     public String getTermos() {
@@ -107,6 +113,7 @@ public class IndiceInvertidoGeral {
         if (indice_invertido instanceof Map) {
             Map<String, ArrayList<ParOcorrenciasID>> indice = (Map) this.indice_invertido;
             for(String key : indice.keySet()) keys.add(key);
+            Collections.sort(keys, Comparator.naturalOrder());
             return keys;
         } else if (indice_invertido instanceof AVLAdaptado) {
             AVLAdaptado indice = (AVLAdaptado) this.indice_invertido;
@@ -169,4 +176,5 @@ public class IndiceInvertidoGeral {
             System.out.println("[insertTerm] Não identificou nenhum tipo");
         }
     }
+
 }

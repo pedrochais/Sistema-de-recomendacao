@@ -21,10 +21,12 @@ public class RelevanciaGeral {
         // Laço para verificar se o termo existe no índice invertido
         ArrayList<String> termos_validos = new ArrayList<>();
         for (String termo : termos_consulta){
-            if(getListPairs(termo) != null){
+            if(getListPairs(termo) != null){ // Se houver uma lista associada ao termo
+                // Adiciona o termo na lista de termos válidos
                 termos_validos.add(termo);
             }
         }
+
         // Convertendo lista para um vetor
         String termos[] = termos_validos.toArray(new String[0]);
 
@@ -151,7 +153,14 @@ public class RelevanciaGeral {
             return indice.get(termo);
         } else if (indice_invertido instanceof AVLAdaptado) {
             AVLAdaptado indice = (AVLAdaptado) this.indice_invertido;
-            return indice.busca(termo).getPares();
+            try{
+                ArrayList<ParOcorrenciasID> pares = indice.busca(termo).getPares();
+                return pares;
+            }catch(NullPointerException exception){
+                System.out.println("[ERRO]: "+exception);
+                System.out.println("[CORREÇÃO]: Retornando null.");
+                return null;
+            }
         } else if (indice_invertido instanceof RBTreeAdaptado) {
             RBTreeAdaptado indice = (RBTreeAdaptado) this.indice_invertido;
             return indice.busca(termo).getPares();

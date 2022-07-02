@@ -6,11 +6,14 @@ import java.util.Map;
  * */
 
 public class Main {
-    public static final int C = 10;
+    public static final int C = 15;
 
     public static void main(String args[]) {
         Arquivo arquivo = new Arquivo();
         ArrayList<String> dataset = new ArrayList<>();
+
+        System.out.println("[AVISO]: Considerando apenas palavras com quantidade de caracteres mais ou igual a "+C);
+        div();
 
         // TAD's
         Map<String, ArrayList<ParOcorrenciasID>> hash = new HashMap<>();
@@ -27,25 +30,24 @@ public class Main {
         RelevanciaGeral relevancia_avl = new RelevanciaGeral(avl);
         RelevanciaGeral relevancia_rb = new RelevanciaGeral(rb);
 
-        dataset.add("");
-        dataset.add("O homem é o único animal que pensa que pensa.");
-        dataset.add("Quem pensa? O animal homem.");
-        dataset.add("Se o homem pensa, logo existe. O homem existe porque pensa ou pensa porque existe?");
+        dataset = arquivo.ler("vic.csv");
+//        dataset.add("");
+//        dataset.add("O homem é o único animal que pensa que pensa.");
+//        dataset.add("Quem pensa? O animal homem.");
+//        dataset.add("Se o homem pensa, logo existe. O homem existe porque pensa ou pensa porque existe?");
 
         indice_hash.construir(dataset);
-        System.out.println(indice_hash.getTermos());
         indice_hash.printarEstrutura();
         div();
         indice_avl.construir(dataset);
-        System.out.println(indice_avl.getTermos());
         indice_avl.printarEstrutura();
         div();
         indice_rb.construir(dataset);
-        System.out.println(indice_rb.getTermos());
         indice_rb.printarEstrutura();
 
         String termos[] = {"animal"};
 
+        div();
         relevancia_hash.calcular(termos, dataset);
         div();
         relevancia_avl.calcular(termos, dataset);
