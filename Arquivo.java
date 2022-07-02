@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 public class Arquivo {
     public ArrayList<String> ler(String file_name){
         ArrayList<String> itens = new ArrayList<>();
-        //String file_name = "amz.csv";
         int limitador = 697;
 
         try {
@@ -27,11 +26,11 @@ public class Arquivo {
                 //System.out.println("Nome do produto: "+splitted[1]);
 
                 if (matcher.find()) {
+                    // Pega o conteúdo entre aspas duplas
                     String description = matcher.group(1);
-                    //System.out.println("Descrição do produto: "+description+"\n");
                     itens.add(description);
                 }else{
-                    //System.out.println("Descrição do produto: "+splitted[2]+"\n");
+                    // Pega o conteúdo através do split (caso sem aspas duplas)
                     itens.add(splitted[2]);
                 }
 

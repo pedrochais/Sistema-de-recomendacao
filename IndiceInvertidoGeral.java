@@ -9,18 +9,6 @@ public class IndiceInvertidoGeral {
         termos = "";
     }
 
-//    public void setIndiceInvertido(Object indice) {
-//        if (indice instanceof HashMap) {
-//            System.out.println("é map");
-//        } else if (indice instanceof AVLAdaptado) {
-//            System.out.println("é avl");
-//        } else {
-//            System.out.println("ué");
-//        }
-//
-//        indice_invertido = indice;
-//    }
-
     public void construir(ArrayList<String> dataset) {
         // Para cada elemento (string) que estiver no dataset
         /*
@@ -39,16 +27,13 @@ public class IndiceInvertidoGeral {
         }
     }
 
-
     private void identificarTermos(String frase, int id_atual) {
         String termos[] = frase.split(" ");
-        //System.out.println(frase);
 
         for (String termo : termos) {
-            // Caso o termo atual não tenha 10 termos ou mais passa para o próximo
+            // Caso o termo atual não tenha X termos ou mais passa para o próximo
             if (!(termo.length() >= 1)) continue;
 
-            //System.out.println("Termo: {"+termo+"} / Tamanho: "+termo.length());
             if (indexContainsKey(termo)) {
                 // Se termo ja existe na lista
                 /*
@@ -126,6 +111,9 @@ public class IndiceInvertidoGeral {
         } else if (indice_invertido instanceof AVLAdaptado) {
             AVLAdaptado indice = (AVLAdaptado) this.indice_invertido;
             return indice.getKeys();
+        } else if (indice_invertido instanceof RBTreeAdaptado) {
+            RBTreeAdaptado indice = (RBTreeAdaptado) this.indice_invertido;
+            return indice.getKeys();
         } else {
             System.out.println("[getKeys] Não identificou nenhum tipo");
             return null;
@@ -141,8 +129,12 @@ public class IndiceInvertidoGeral {
             AVLAdaptado indice = (AVLAdaptado) this.indice_invertido;
             if ((indice.busca(termo)) != null) return true;
             else return false;
+        } else if (indice_invertido instanceof RBTreeAdaptado) {
+            RBTreeAdaptado indice = (RBTreeAdaptado) this.indice_invertido;
+            if ((indice.busca(termo)) != indice.getTNULL()) return true;
+            else return false;
         } else {
-            System.out.println("[indiceContemChave] Não identificou nenhum tipo");
+            System.out.println("[indexContainsKey] Não identificou nenhum tipo");
             return false;
         }
     }
@@ -154,8 +146,11 @@ public class IndiceInvertidoGeral {
         } else if (indice_invertido instanceof AVLAdaptado) {
             AVLAdaptado indice = (AVLAdaptado) this.indice_invertido;
             return indice.busca(termo).getPares();
+        } else if (indice_invertido instanceof RBTreeAdaptado) {
+            RBTreeAdaptado indice = (RBTreeAdaptado) this.indice_invertido;
+            return indice.busca(termo).getPares();
         } else {
-            System.out.println("[indiceContemChave] Não identificou nenhum tipo");
+            System.out.println("[getListPairs] Não identificou nenhum tipo");
             return null;
         }
     }
@@ -167,9 +162,11 @@ public class IndiceInvertidoGeral {
         } else if (indice_invertido instanceof AVLAdaptado) {
             AVLAdaptado indice = (AVLAdaptado) this.indice_invertido;
             indice.insere(termo, ParesOcorrenciasID);
+        } else if (indice_invertido instanceof RBTreeAdaptado) {
+            RBTreeAdaptado indice = (RBTreeAdaptado) this.indice_invertido;
+            indice.insere(termo, ParesOcorrenciasID);
         } else {
-            System.out.println("[indiceContemChave] Não identificou nenhum tipo");
-
+            System.out.println("[insertTerm] Não identificou nenhum tipo");
         }
     }
 }

@@ -9,11 +9,10 @@ public class RelevanciaGeral {
     private int quantidade_produtos_dataset_atual;
     private Object indice_invertido;
 
-    /* Antes de iniciar o cálculo da relevância devem ser observados os seguintes pntos
+    /* Antes de iniciar o cálculo da relevância devem ser observados os seguintes pontos
      * 1. Todas as letras devem estar minúsculas
      * 2. Todos os caracteres especiais devem ser retirados
      * */
-
     public RelevanciaGeral(Object indice_invertido){
         this.indice_invertido = indice_invertido;
     }
@@ -24,12 +23,10 @@ public class RelevanciaGeral {
         for (String termo : termos_consulta){
             if(getListPairs(termo) != null){
                 termos_validos.add(termo);
-//                System.out.println(termo);
             }
         }
-//        System.out.println("vetor----------------");
+        // Convertendo lista para um vetor
         String termos[] = termos_validos.toArray(new String[0]);
-//        for (String t : termos) System.out.println(t);
 
         if (termos.length == 0){
             System.out.println("[Termo(s) não encontrado(s) no índice]");
@@ -85,16 +82,11 @@ public class RelevanciaGeral {
 
             System.out.println("[Cálculo da intersecção finalizado: " + lista_auxiliar + "]");
 
-            // Calculo da relevância [INÍCIO]
+            // Calculo da relevância
             for (Integer id_produto : lista_auxiliar) { // Para cada par (descrição) associado ao termo será feito o cálculo da relevância
-                //int id = (Integer) par.getIDProduto();
-                inserirDados(dataset.size(), lista_auxiliar.size());
-
+                inserirDados(dataset.size(), lista_auxiliar.size()); // Determinando o valor para N e d
                 double rel = calcularRelevancia(dataset.get(id_produto), termos);
-                System.out.printf("Relevância do elemento de ID %d: %.3f\n", id_produto, rel);
-                System.out.println("Frase: " + dataset.get(id_produto));
             }
-            // Calculo da relevância [FIM]
         }
 
         return true;
@@ -148,13 +140,9 @@ public class RelevanciaGeral {
 
         int palavras_distintas = palavras_identificadas.split(" ").length;
 
-        System.out.println("Número de palavras distintas na frase: "+palavras_distintas);
+        //System.out.println("Número de palavras distintas na frase: "+palavras_distintas);
 
         return palavras_distintas;
-    }
-
-    private double log(double base, double valor) {
-        return Math.log(valor) / Math.log(base);
     }
 
     private ArrayList<ParOcorrenciasID> getListPairs(String termo) {
@@ -164,8 +152,11 @@ public class RelevanciaGeral {
         } else if (indice_invertido instanceof AVLAdaptado) {
             AVLAdaptado indice = (AVLAdaptado) this.indice_invertido;
             return indice.busca(termo).getPares();
+        } else if (indice_invertido instanceof RBTreeAdaptado) {
+            RBTreeAdaptado indice = (RBTreeAdaptado) this.indice_invertido;
+            return indice.busca(termo).getPares();
         } else {
-            System.out.println("[indiceContemChave] Não identificou nenhum tipo");
+            System.out.println("[getListPairs] Não identificou nenhum tipo");
             return null;
         }
     }
@@ -178,6 +169,10 @@ public class RelevanciaGeral {
     public void getDados(){
         System.out.println("N = "+this.quantidade_produtos_dataset_geral+" / d = "+this.quantidade_produtos_dataset_atual);
 
+    }
+
+    private double log(double base, double valor) {
+        return Math.log(valor) / Math.log(base);
     }
 }
 

@@ -2,13 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 /* LEMBRETES
-* O programa tá pegando a palavra 'description' na linha 0 (não precisa)
-* */
-
-//Passo a passo para adicionar um novo termo
-/*
- * Caso o termo já exista no TAD, será adicionado o ID do produto na lista de pares daquele termo
- * Caso o termo ainda não exista no TAD, ele será adicionado no TAD juntamente com o ID do produto na lista de pares
+ * O programa tá pegando a palavra 'description' na linha 0 (não precisa)
  * */
 
 public class Main {
@@ -21,35 +15,42 @@ public class Main {
         // TAD's
         Map<String, ArrayList<ParOcorrenciasID>> hash = new HashMap<>();
         AVLAdaptado avl = new AVLAdaptado();
+        RBTreeAdaptado rb = new RBTreeAdaptado();
 
         // Índices invertidos
-        IndiceInvertidoGeral indice1 = new IndiceInvertidoGeral(hash);
-        IndiceInvertidoGeral indice2 = new IndiceInvertidoGeral(avl);
+        IndiceInvertidoGeral indice_hash = new IndiceInvertidoGeral(hash);
+        IndiceInvertidoGeral indice_avl = new IndiceInvertidoGeral(avl);
+        IndiceInvertidoGeral indice_rb = new IndiceInvertidoGeral(rb);
 
         // Relevância
-        RelevanciaGeral relevancia1 = new RelevanciaGeral(hash);
-        RelevanciaGeral relevancia2 = new RelevanciaGeral(avl);
-
-
+        RelevanciaGeral relevancia_hash = new RelevanciaGeral(hash);
+        RelevanciaGeral relevancia_avl = new RelevanciaGeral(avl);
+        RelevanciaGeral relevancia_rb = new RelevanciaGeral(rb);
 
         dataset.add("");
         dataset.add("O homem é o único animal que pensa que pensa.");
         dataset.add("Quem pensa? O animal homem.");
         dataset.add("Se o homem pensa, logo existe. O homem existe porque pensa ou pensa porque existe?");
 
-        indice1.construir(dataset);
-
-        System.out.println(indice1.getTermos());
-
-        indice1.printarEstrutura();
-
+        indice_hash.construir(dataset);
+        System.out.println(indice_hash.getTermos());
+        indice_hash.printarEstrutura();
         div();
+        indice_avl.construir(dataset);
+        System.out.println(indice_avl.getTermos());
+        indice_avl.printarEstrutura();
+        div();
+        indice_rb.construir(dataset);
+        System.out.println(indice_rb.getTermos());
+        indice_rb.printarEstrutura();
 
         String termos[] = {"animal"};
 
-        relevancia1.calcular(termos, dataset);
-        relevancia1.getDados();
-
+        relevancia_hash.calcular(termos, dataset);
+        div();
+        relevancia_avl.calcular(termos, dataset);
+        div();
+        relevancia_rb.calcular(termos, dataset);
 
 
 //        // Variáveis
@@ -100,7 +101,7 @@ public class Main {
 
     }
 
-    public static void div(){
+    public static void div() {
         System.out.println("-------------------------------------------------------------------------------------------");
     }
 }
