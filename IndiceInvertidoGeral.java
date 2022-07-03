@@ -2,11 +2,23 @@ import java.util.*;
 
 public class IndiceInvertidoGeral {
     private Object indice_invertido;
+    private String estrutura_nome;
+    private boolean indice_construido;
     private String termos;
 
     public IndiceInvertidoGeral(Object indice_invertido) {
         this.indice_invertido = indice_invertido;
+        this.indice_construido = false;
         termos = "";
+        if (indice_invertido instanceof Map) {
+            this.estrutura_nome = "HashMap";
+        } else if (indice_invertido instanceof AVLAdaptado) {
+            this.estrutura_nome = "Árvore AVL";
+        } else if (indice_invertido instanceof RBTreeAdaptado) {
+            this.estrutura_nome = "Árvore Rubro-Negra";
+        } else {
+            System.out.println("[IndiceInvertidoGeral] Não identificou nenhum tipo");
+        }
     }
 
     public void construir(ArrayList<String> dataset) {
@@ -18,13 +30,15 @@ public class IndiceInvertidoGeral {
         for (int i = 0; i < dataset.size(); i++) {
             String conteudo;
             conteudo = dataset.get(i).toLowerCase(Locale.ROOT); // (1)
-            conteudo = conteudo.replaceAll("[-.,+=*&:®…•\u00AD–—’;%$#@|!?_\"\']", ""); // (2)
+            //conteudo = conteudo.replaceAll("[-.,+=*&:®…•\u00AD–—’;%$#@|!?_\"\']", ""); // (2)
+            conteudo = conteudo.replaceAll(Main.regex, ""); // (2)
             conteudo = conteudo.replaceAll(" ", " "); // (2)
             conteudo = conteudo.replaceAll("/", " "); // (2)
 
             // Identificar todos os termos e adicioná-los na lista de termos
             identificarTermos(conteudo, i);
         }
+        this.indice_construido = true;
     }
 
     private void identificarTermos(String frase, int id_atual) {
@@ -97,7 +111,7 @@ public class IndiceInvertidoGeral {
             System.out.println();
         }
 
-        System.out.println("Quantidade de termos no índice: "+getKeys().size());
+//        System.out.println("Quantidade de termos no índice: "+getKeys().size());
     }
 
     public String getTermos() {
@@ -177,4 +191,11 @@ public class IndiceInvertidoGeral {
         }
     }
 
+    public String getEstruturaNome() {
+        return estrutura_nome;
+    }
+
+    public boolean getIndiceConstruido() {
+        return indice_construido;
+    }
 }

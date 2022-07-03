@@ -1,36 +1,51 @@
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RelevanciaGeral {
+    private Map<Integer, Double> lista_descricao_relevancia = new HashMap<>();
+    Scanner input = new Scanner(System.in);
     private int quantidade_produtos_dataset_geral; // [LEMBRETE] Está considerando a linha com a identificação das colunas
     private int quantidade_produtos_dataset_atual;
+    private String estrutura_nome;
     private Object indice_invertido;
+
+    public Map<Integer, Double> getDescricaoRelevancia() {
+        return lista_descricao_relevancia;
+    }
 
     /* Antes de iniciar o cálculo da relevância devem ser observados os seguintes pontos
      * 1. Todas as letras devem estar minúsculas
      * 2. Todos os caracteres especiais devem ser retirados
      * */
-    public RelevanciaGeral(Object indice_invertido){
+    public RelevanciaGeral(Object indice_invertido) {
         this.indice_invertido = indice_invertido;
+        if (indice_invertido instanceof Map) {
+            this.estrutura_nome = "HashMap";
+        } else if (indice_invertido instanceof AVLAdaptado) {
+            this.estrutura_nome = "Árvore AVL";
+        } else if (indice_invertido instanceof RBTreeAdaptado) {
+            this.estrutura_nome = "Árvore Rubro-Negra";
+        } else {
+            System.out.println("[IndiceInvertidoGeral] Não identificou nenhum tipo");
+        }
     }
 
-    public boolean calcular(String termos_consulta[], ArrayList<String> dataset){
+    public boolean calcular(String termos_consulta[], ArrayList<String> dataset) {
         // Laço para verificar se o termo existe no índice invertido
         ArrayList<String> termos_validos = new ArrayList<>();
-        for (String termo : termos_consulta){
-            if(getListPairs(termo) != null){ // Se houver uma lista associada ao termo
+        for (String termo : termos_consulta) {
+            if (getListPairs(termo) != null) { // Se houver uma lista associada ao termo
                 // Adiciona o termo na lista de termos válidos
                 termos_validos.add(termo);
             }
         }
 
+
         // Convertendo lista para um vetor
         String termos[] = termos_validos.toArray(new String[0]);
 
-        if (termos.length == 0){
+        if (termos.length == 0) {
             System.out.println("[Termo(s) não encontrado(s) no índice]");
             return false;
         }
@@ -45,9 +60,11 @@ public class RelevanciaGeral {
 
                 double rel = calcularRelevancia(dataset.get(id), termos);
 
-                System.out.printf("Relevância do elemento de ID %d: %.3f\n", id, rel);
-                System.out.println("Frase: " + dataset.get(id));
-                System.out.println();
+//                System.out.printf("Relevância do elemento de ID %d: %.3f\n", id, rel);
+//                System.out.println("Frase: " + dataset.get(id));
+//                System.out.println();
+
+                lista_descricao_relevancia.put(id, rel);
             }
         } else {
             // Este bloco será executado quando houver dois termos ou mais na consulta
@@ -86,18 +103,84 @@ public class RelevanciaGeral {
 
             // Calculo da relevância
             for (Integer id_produto : lista_auxiliar) { // Para cada par (descrição) associado ao termo será feito o cálculo da relevância
-                inserirDados(dataset.size(), lista_auxiliar.size()); // Determinando o valor para N e d
+                inserirDados(dataset.size() - 1, lista_auxiliar.size()); // Determinando o valor para N e d
                 double rel = calcularRelevancia(dataset.get(id_produto), termos);
+
+//                System.out.printf("Relevância do elemento de ID %d: %.3f\n", id_produto, rel);
+//                System.out.println("Frase: " + dataset.get(id_produto));
+//                System.out.println();
+
+                lista_descricao_relevancia.put(id_produto, rel);
             }
         }
 
         return true;
     }
 
-    private double calcularRelevancia(String descricao, String termos_consulta[]){
+    public void printDescricaoRelevancia(Double limiar) {
+        List<Map.Entry<Integer, Double>> list = new ArrayList<>(this.lista_descricao_relevancia.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+        ArrayList<Integer> list_id = new ArrayList<>();
+        int contador;
+        boolean continuar = false;
+
+        System.out.println("\n[Lista completa]");
+        contador = 0;
+        for (int i = list.size() - 1; i >= 0; i--) {
+            System.out.println("ID: " + list.get(i).getKey() + " / Relevância: " + list.get(i).getValue());
+            contador++;
+            if(contador == 10){
+                while(true){
+                    System.out.println("[AVISO] A lista a ser impressa possui mais de 10 itens ("+(list.size() - 1)+" restantes), deseja continular? (S/N)");
+                    String entrada = input.nextLine();
+                    if(entrada.equals("S") || entrada.equals("s")){
+                        continuar = true;
+                        break;
+                    }else if (entrada.equals("N") || entrada.equals("n")){
+                        continuar = false;
+                        break;
+                    }
+                }
+            }
+            if (!continuar) break;
+        }
+
+        System.out.println("\n[Lista considerando limiar = "+limiar+"]");
+        contador = 0;
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (list.get(i).getValue() > limiar) {
+                System.out.println("ID: " + list.get(i).getKey() + " / Relevância: " + list.get(i).getValue());
+                list_id.add((Integer)list.get(i).getKey());
+            }
+            contador++;
+            if(contador == 10){
+                while(true){
+                    System.out.println("[AVISO] A lista a ser impressa possui mais de 10 itens ("+(list.size() - 1)+" restantes), deseja continular? (S/N)");
+                    String entrada = input.nextLine();
+                    if(entrada.equals("S") || entrada.equals("s")){
+                        continuar = true;
+                        break;
+                    }else if (entrada.equals("N") || entrada.equals("n")){
+                        continuar = false;
+                        break;
+                    }
+                }
+            }
+            if (!continuar) break;
+        }
+
+        Collections.sort(list_id);
+        System.out.println("\n[Lista ordenada dos ID's recomendados]");
+        for (Integer item : list_id){
+            System.out.print(item+", ");
+        }
+        System.out.println();
+    }
+
+    private double calcularRelevancia(String descricao, String termos_consulta[]) {
         String conteudo;
         conteudo = descricao.toLowerCase(Locale.ROOT);
-        conteudo = conteudo.replaceAll("[-.,+=*&:®…•\u00AD–—’;%$#@|!?_\"\']", "");
+        conteudo = conteudo.replaceAll(Main.regex, "");
         conteudo = conteudo.replaceAll(" ", " ");
         conteudo = conteudo.replaceAll("/", " ");
         float soma_pesos = 0;
@@ -105,38 +188,39 @@ public class RelevanciaGeral {
         String palavras[] = descricao.split(" ");
         int quantidade_palavras_distintas = identificarNumeroDePalavrasDistintas(conteudo);
 
-        for (int i = 0; i < termos_consulta.length; i++){
+//        System.out.println(termos_consulta.length);
+        for (int i = 0; i < termos_consulta.length; i++) {
             double peso = calcularPesoTermo(conteudo, termos_consulta[i]);
-            //System.out.println("Cálculo do peso: "+peso);
+            //System.out.println("Cálculo do peso ("+termos_consulta[i]+"): "+peso);
             //soma_pesos += calcularPesoTermo(descricao, termos_consulta[i]);
             soma_pesos += peso;
         }
 
-        return (soma_pesos/quantidade_palavras_distintas);
+        return (soma_pesos / quantidade_palavras_distintas);
     }
 
-    private double calcularPesoTermo(String descricao, String termo){
+    private double calcularPesoTermo(String descricao, String termo) {
         int quantidade_ocorrencias = ocorrenciasTermo(descricao, termo);
         //System.out.println("Quantidade de ocorrencias do termo na frase: "+quantidade_ocorrencias);
-        return (quantidade_ocorrencias * log(2, quantidade_produtos_dataset_geral)/quantidade_produtos_dataset_atual);
+        return (quantidade_ocorrencias * log(2, quantidade_produtos_dataset_geral) / quantidade_produtos_dataset_atual);
     }
 
-    private int ocorrenciasTermo(String conteudo, String termo){
-        Matcher m = Pattern.compile("("+termo+")",Pattern.DOTALL).matcher(conteudo);
+    private int ocorrenciasTermo(String conteudo, String termo) {
+        Matcher m = Pattern.compile("(" + termo + ")", Pattern.DOTALL).matcher(conteudo);
         int ocorrencias = 0;
         while (m.find()) ocorrencias++;
 
         return ocorrencias;
     }
 
-    private int identificarNumeroDePalavrasDistintas(String conteudo){
+    private int identificarNumeroDePalavrasDistintas(String conteudo) {
         String palavras[] = conteudo.split(" ");
 
         String palavras_identificadas = "";
 
-        for(String palavra : palavras){
-            if (!palavras_identificadas.contains(palavra)){
-                palavras_identificadas += palavra+" ";
+        for (String palavra : palavras) {
+            if (!palavras_identificadas.contains(palavra)) {
+                palavras_identificadas += palavra + " ";
             }
         }
 
@@ -153,11 +237,11 @@ public class RelevanciaGeral {
             return indice.get(termo);
         } else if (indice_invertido instanceof AVLAdaptado) {
             AVLAdaptado indice = (AVLAdaptado) this.indice_invertido;
-            try{
+            try {
                 ArrayList<ParOcorrenciasID> pares = indice.busca(termo).getPares();
                 return pares;
-            }catch(NullPointerException exception){
-                System.out.println("[ERRO]: "+exception);
+            } catch (NullPointerException exception) {
+                System.out.println("[ERRO]: " + exception);
                 System.out.println("[CORREÇÃO]: Retornando null.");
                 return null;
             }
@@ -170,18 +254,22 @@ public class RelevanciaGeral {
         }
     }
 
-    private void inserirDados(int qt_geral, int qt_atual){
+    private void inserirDados(int qt_geral, int qt_atual) {
         this.quantidade_produtos_dataset_atual = qt_atual;
         this.quantidade_produtos_dataset_geral = qt_geral;
     }
 
-    public void getDados(){
-        System.out.println("N = "+this.quantidade_produtos_dataset_geral+" / d = "+this.quantidade_produtos_dataset_atual);
+    public void getDados() {
+        System.out.println("N = " + this.quantidade_produtos_dataset_geral + " / d = " + this.quantidade_produtos_dataset_atual);
 
     }
 
     private double log(double base, double valor) {
         return Math.log(valor) / Math.log(base);
+    }
+
+    public String getEstruturaNome() {
+        return estrutura_nome;
     }
 }
 
