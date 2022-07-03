@@ -16,6 +16,8 @@ public class IndiceInvertidoGeral {
             this.estrutura_nome = "Árvore AVL";
         } else if (indice_invertido instanceof RBTreeAdaptado) {
             this.estrutura_nome = "Árvore Rubro-Negra";
+        } else if (indice_invertido instanceof Tree234) {
+            this.estrutura_nome = "Árvore 2-3-4";
         } else {
             System.out.println("[IndiceInvertidoGeral] Não identificou nenhum tipo");
         }
@@ -98,11 +100,14 @@ public class IndiceInvertidoGeral {
     }
 
     public void printarEstrutura(ArrayList<String> nomes_produtos, Integer modo) { // Verificar a estrutura
-        if (indice_invertido instanceof Map) System.out.println("Imprimindo índice invertido do Hash");
+        if (indice_invertido instanceof Map)
+            System.out.println("Imprimindo índice invertido do Hash");
         else if (indice_invertido instanceof AVLAdaptado)
             System.out.println("Imprimindo índice invertido da Árvore AVL");
         else if (indice_invertido instanceof RBTreeAdaptado)
             System.out.println("Imprimindo índice invertido da Árvore Rubro-Negra");
+        else if (indice_invertido instanceof Tree234)
+            System.out.println("Imprimindo índice invertido da Árvore 2-3-4");
         else System.out.println("[printarEstrutura] Não identificou nenhum tipo");
 
         if (modo == 1) {
@@ -142,6 +147,8 @@ public class IndiceInvertidoGeral {
             this.indice_invertido = new AVLAdaptado();
         } else if (indice_invertido instanceof RBTreeAdaptado) {
             this.indice_invertido = new RBTreeAdaptado();
+        } else if (indice_invertido instanceof Tree234) {
+            this.indice_invertido = new Tree234();
         } else {
             System.out.println("[limparIndice] Não identificou nenhum tipo");
         }
@@ -168,6 +175,9 @@ public class IndiceInvertidoGeral {
         } else if (indice_invertido instanceof RBTreeAdaptado) {
             RBTreeAdaptado indice = (RBTreeAdaptado) this.indice_invertido;
             return indice.getKeys();
+        } else if (indice_invertido instanceof Tree234) {
+            Tree234 indice = (Tree234) this.indice_invertido;
+            return indice.getKeysList();
         } else {
             System.out.println("[getKeys] Não identificou nenhum tipo");
             return null;
@@ -187,6 +197,10 @@ public class IndiceInvertidoGeral {
             RBTreeAdaptado indice = (RBTreeAdaptado) this.indice_invertido;
             if ((indice.busca(termo)) != indice.getTNULL()) return true;
             else return false;
+        } else if (indice_invertido instanceof Tree234) {
+            Tree234 indice = (Tree234) this.indice_invertido;
+            if ((indice.busca(termo)) != -1) return true;
+            else return false;
         } else {
             System.out.println("[indexContainsKey] Não identificou nenhum tipo");
             return false;
@@ -203,6 +217,13 @@ public class IndiceInvertidoGeral {
         } else if (indice_invertido instanceof RBTreeAdaptado) {
             RBTreeAdaptado indice = (RBTreeAdaptado) this.indice_invertido;
             return indice.busca(termo).getPares();
+        } else if (indice_invertido instanceof Tree234) {
+            Tree234 indice = (Tree234) this.indice_invertido;
+            if(indice.busca(termo) != -1){
+                return indice.getNoEncontrado().getItemEncontrado().getPares();
+            }else{
+                return null;
+            }
         } else {
             System.out.println("[getListPairs] Não identificou nenhum tipo");
             return null;
@@ -219,6 +240,9 @@ public class IndiceInvertidoGeral {
         } else if (indice_invertido instanceof RBTreeAdaptado) {
             RBTreeAdaptado indice = (RBTreeAdaptado) this.indice_invertido;
             indice.insere(termo, ParesOcorrenciasID);
+        } else if (indice_invertido instanceof Tree234) {
+            Tree234 indice = (Tree234) this.indice_invertido;
+            indice.insert(termo, ParesOcorrenciasID);
         } else {
             System.out.println("[insertTerm] Não identificou nenhum tipo");
         }

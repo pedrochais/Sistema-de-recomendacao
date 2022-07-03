@@ -16,20 +16,6 @@ public class RelevanciaGeral {
 
     public void setTAD(Object indice_invertido){
         this.indice_invertido = indice_invertido;
-//        if (indice_invertido instanceof Map) {
-//            System.out.println("Hash");
-//
-//        } else if (indice_invertido instanceof AVLAdaptado) {
-//            System.out.println("Limpando AVL");
-//
-//
-//        } else if (indice_invertido instanceof RBTreeAdaptado) {
-//            System.out.println("Limpando RBTree");
-//
-//
-//        } else {
-//            System.out.println("[setTAD] Não identificou nenhum tipo");
-//        }
     }
 
     public void limparIndice(){
@@ -40,6 +26,8 @@ public class RelevanciaGeral {
             this.indice_invertido = new AVLAdaptado();
         } else if (indice_invertido instanceof RBTreeAdaptado) {
             this.indice_invertido = new RBTreeAdaptado();
+        } else if (indice_invertido instanceof Tree234) {
+            this.indice_invertido = new Tree234();
         } else {
             System.out.println("[limparIndice] Não identificou nenhum tipo");
         }
@@ -57,6 +45,8 @@ public class RelevanciaGeral {
             this.estrutura_nome = "Árvore AVL";
         } else if (indice_invertido instanceof RBTreeAdaptado) {
             this.estrutura_nome = "Árvore Rubro-Negra";
+        } else if (indice_invertido instanceof Tree234) {
+            this.estrutura_nome = "Árvore 2-3-4";
         } else {
             System.out.println("[IndiceInvertidoGeral] Não identificou nenhum tipo");
         }
@@ -64,11 +54,11 @@ public class RelevanciaGeral {
 
     public boolean calcular(String termos_consulta[], ArrayList<String> dataset) {
 
-        for (String t : termos_consulta){
-            System.out.println("Termo: "+t);
-        }
-
-        System.out.println(termos_consulta.length);
+//        for (String t : termos_consulta){
+//            System.out.println("Termo: "+t);
+//        }
+//
+//        System.out.println(termos_consulta.length);
         this.lista_descricao_relevancia = new HashMap<>();
 
         //MODIFICAÇÕES FEITAS ATÉ AQUI
@@ -164,29 +154,7 @@ public class RelevanciaGeral {
         ArrayList<Integer> list_id = new ArrayList<>();
         int contador;
         boolean continuar = true;
-        /*
-        System.out.println("\n[Lista completa]");
-        contador = 0;
-        for (int i = list.size() - 1; i >= 0; i--) {
-            System.out.println("ID: " + list.get(i).getKey() + " / Relevância: " + list.get(i).getValue());
 
-            contador++;
-            if(contador == 10){
-                while(true){
-                    System.out.println("[AVISO] A lista a ser impressa possui mais de 10 itens ("+(list.size() - 1)+" restante(s)), deseja continular? (S/N)");
-                    String entrada = input.nextLine();
-                    if(entrada.equals("S") || entrada.equals("s")){
-                        continuar = true;
-                        break;
-                    }else if (entrada.equals("N") || entrada.equals("n")){
-                        continuar = false;
-                        break;
-                    }
-                }
-            }
-            if (!continuar) break;
-        }
-        */
         System.out.println("\nLista de recomendações (limiar = "+limiar+")\n");
         continuar = true;
         contador = 0;
@@ -219,12 +187,12 @@ public class RelevanciaGeral {
             if (!continuar) break;
         }
 
-//        Collections.sort(list_id);
-//        System.out.println("\n[Lista ordenada dos ID's recomendados]");
-//
-//        for (Integer item : list_id){
-//            System.out.print(item+", ");
-//        }
+        Collections.sort(list_id);
+        System.out.println("\n[Lista ordenada dos ID's recomendados]");
+
+        for (Integer item : list_id){
+            System.out.print(item+", ");
+        }
         System.out.println();
     }
 
@@ -288,17 +256,17 @@ public class RelevanciaGeral {
             return indice.get(termo);
         } else if (indice_invertido instanceof AVLAdaptado) {
             AVLAdaptado indice = (AVLAdaptado) this.indice_invertido;
-            try {
-                ArrayList<ParOcorrenciasID> pares = indice.busca(termo).getPares();
-                return pares;
-            } catch (NullPointerException exception) {
-                System.out.println("[ERRO]: " + exception);
-                System.out.println("[CORREÇÃO]: Retornando null.");
-                return null;
-            }
+            return indice.busca(termo).getPares();
         } else if (indice_invertido instanceof RBTreeAdaptado) {
             RBTreeAdaptado indice = (RBTreeAdaptado) this.indice_invertido;
             return indice.busca(termo).getPares();
+        } else if (indice_invertido instanceof Tree234) {
+            Tree234 indice = (Tree234) this.indice_invertido;
+            if(indice.busca(termo) != -1){
+                return indice.getNoEncontrado().getItemEncontrado().getPares();
+            }else{
+                return null;
+            }
         } else {
             System.out.println("[getListPairs] Não identificou nenhum tipo");
             return null;

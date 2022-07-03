@@ -22,26 +22,31 @@ public class Main {
         Map<String, ArrayList<ParOcorrenciasID>> hash = new HashMap<>();
         AVLAdaptado avl = new AVLAdaptado();
         RBTreeAdaptado rb = new RBTreeAdaptado();
+        Tree234 t234 = new Tree234();
 
         // Índices invertidos (primeira instância, caso for necessário construir outros o TAD deve ser resetado)
         IndiceInvertidoGeral indice_hash = new IndiceInvertidoGeral(hash);
         IndiceInvertidoGeral indice_avl = new IndiceInvertidoGeral(avl);
         IndiceInvertidoGeral indice_rb = new IndiceInvertidoGeral(rb);
+        IndiceInvertidoGeral indice_t234 = new IndiceInvertidoGeral(t234);
 
         ArrayList<IndiceInvertidoGeral> indices = new ArrayList<>();
         indices.add(indice_hash);
         indices.add(indice_avl);
         indices.add(indice_rb);
+        indices.add(indice_t234);
 
         // Relevância
         RelevanciaGeral relevancia_hash = new RelevanciaGeral(hash);
         RelevanciaGeral relevancia_avl = new RelevanciaGeral(avl);
         RelevanciaGeral relevancia_rb = new RelevanciaGeral(rb);
+        RelevanciaGeral relevancia_t234 = new RelevanciaGeral(t234);
 
         ArrayList<RelevanciaGeral> relevancias = new ArrayList<>();
         relevancias.add(relevancia_hash);
         relevancias.add(relevancia_avl);
         relevancias.add(relevancia_rb);
+        relevancias.add(relevancia_t234);
 
         // Vetor que contém os nomes dos arquivos dos datasets
         String vetor_datasets[] = {"Amazon", "Victoria's Secret", "Btemptd", "Calvin Klein", "Hanky Panky", "American Eagle", "Macy's", "Nordstrom", "Topshop USA"};
