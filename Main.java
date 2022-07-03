@@ -13,6 +13,7 @@ public class Main {
     public static void main(String args[]) {
         Arquivo arquivo = new Arquivo();
         ArrayList<String> dataset = new ArrayList<>();
+        ArrayList<String> nomes_produtos = new ArrayList<>();
         Scanner input = new Scanner(System.in);
         long inicio, fim;
 
@@ -48,9 +49,10 @@ public class Main {
 
         // Dataset inicial
         String file_name = "Amazon.csv";
-        dataset = arquivo.ler("Datasets/" + file_name);
+        dataset = arquivo.ler("Datasets/" + file_name, 1); // Modo 1 pega as descrições
+        nomes_produtos = arquivo.ler("Datasets/" + file_name, 0); // Modo 0 pega os nomes dos produtos
 
-        String termos[] = {"comfortable"};
+        String termos[] = {"breathable"};
         Double limiar = 0.0;
 
 
@@ -110,7 +112,8 @@ public class Main {
 
                     if (lista_datasets.contains(lista_datasets.get(op_int - 1))) {
                         System.out.println("[AVISO] Lendo dataset " + lista_datasets.get(op_int - 1) + " e adicionando descrições em uma ArrayList.");
-                        dataset = arquivo.ler("Datasets/" + lista_datasets.get(op_int - 1) + ".csv");
+                        dataset = arquivo.ler("Datasets/" + lista_datasets.get(op_int - 1) + ".csv", 1);
+                        nomes_produtos = arquivo.ler("Datasets/" + lista_datasets.get(op_int - 1) + ".csv", 0);
                         file_name = lista_datasets.get(op_int - 1);
 
                         // Permitir que os índices sejam construídos novamente
@@ -217,9 +220,9 @@ public class Main {
                             System.out.println("[Termo(s) escolhido(s) para a consulta: " + imprimirTermos(termos) + "]");
                             System.out.println("[Tempo de execução do cálculo (" + relevancia.getEstruturaNome() + "): " + (fim - inicio) + "ms]");
 
-                            System.out.println("[Pressione ENTER para continuar]");
+                            System.out.println("[Pressione ENTER para ver a lista de recomendações]");
                             String stop = input.nextLine();
-                            relevancia.printDescricaoRelevancia(limiar);
+                            relevancia.printDescricaoRelevancia(nomes_produtos, limiar);
 
                         } else {
                             System.out.println("[AVISO] Para calcular a relevância para este TAD é necessário primeiramente construir o índice invertido.");

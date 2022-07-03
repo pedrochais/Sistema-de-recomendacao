@@ -158,13 +158,13 @@ public class RelevanciaGeral {
         return true;
     }
 
-    public void printDescricaoRelevancia(Double limiar) { // Função muito feia
+    public void printDescricaoRelevancia(ArrayList<String> nomes_produtos, Double limiar) {
         List<Map.Entry<Integer, Double>> list = new ArrayList<>(this.lista_descricao_relevancia.entrySet());
         list.sort(Map.Entry.comparingByValue());
         ArrayList<Integer> list_id = new ArrayList<>();
         int contador;
         boolean continuar = true;
-
+        /*
         System.out.println("\n[Lista completa]");
         contador = 0;
         for (int i = list.size() - 1; i >= 0; i--) {
@@ -186,8 +186,8 @@ public class RelevanciaGeral {
             }
             if (!continuar) break;
         }
-
-        System.out.println("\n[Lista considerando limiar = "+limiar+"]");
+        */
+        System.out.println("\nLista de recomendações (limiar = "+limiar+")\n");
         continuar = true;
         contador = 0;
         for (int i = list.size() - 1; i >= 0; i--) {
@@ -197,7 +197,9 @@ public class RelevanciaGeral {
         }
         for (int i = list.size() - 1; i >= 0; i--) {
             if (list.get(i).getValue() > limiar) {
-                System.out.println("ID: " + list.get(i).getKey() + " / Relevância: " + list.get(i).getValue());
+                //System.out.println("ID: " + list.get(i).getKey() + " / Relevância: " + list.get(i).getValue());
+                System.out.println("[PRODUTO]: "+nomes_produtos.get(list.get(i).getKey()));
+                System.out.println("[RELEVÂNCIA]: "+list.get(i).getValue()+"\n");
             }
 
             contador++;
@@ -217,12 +219,12 @@ public class RelevanciaGeral {
             if (!continuar) break;
         }
 
-        Collections.sort(list_id);
-        System.out.println("\n[Lista ordenada dos ID's recomendados]");
-
-        for (Integer item : list_id){
-            System.out.print(item+", ");
-        }
+//        Collections.sort(list_id);
+//        System.out.println("\n[Lista ordenada dos ID's recomendados]");
+//
+//        for (Integer item : list_id){
+//            System.out.print(item+", ");
+//        }
         System.out.println();
     }
 
