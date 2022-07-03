@@ -22,11 +22,14 @@ public class IndiceInvertidoGeral {
     }
 
     public void construir(ArrayList<String> dataset) {
+
+        //this.indice_invertido = indice_invertido;
         // Para cada elemento (string) que estiver no dataset
         /*
          * 1. Todos os caracteres da string deverão ser minúsculos
          * 2. Não devem haver caracteres especiais na string
          * */
+
         for (int i = 0; i < dataset.size(); i++) {
             String conteudo;
             conteudo = dataset.get(i).toLowerCase(Locale.ROOT); // (1)
@@ -111,7 +114,25 @@ public class IndiceInvertidoGeral {
             System.out.println();
         }
 
-//        System.out.println("Quantidade de termos no índice: "+getKeys().size());
+        System.out.println("Quantidade de termos no índice: "+getKeys().size());
+    }
+
+    public void limparIndice(){
+        if (indice_invertido instanceof Map) {
+            System.out.println("Limpando tabela Hash");
+            this.indice_invertido = new HashMap<>();
+
+        } else if (indice_invertido instanceof AVLAdaptado) {
+            System.out.println("Limpando AVL");
+            this.indice_invertido = new AVLAdaptado();
+
+        } else if (indice_invertido instanceof RBTreeAdaptado) {
+            System.out.println("Limpando RBTree");
+            this.indice_invertido = new RBTreeAdaptado();
+
+        } else {
+            System.out.println("[limparIndice] Não identificou nenhum tipo");
+        }
     }
 
     public String getTermos() {
@@ -197,5 +218,9 @@ public class IndiceInvertidoGeral {
 
     public boolean getIndiceConstruido() {
         return indice_construido;
+    }
+
+    public void setIndiceConstruído(boolean bool){
+        this.indice_construido = bool;
     }
 }

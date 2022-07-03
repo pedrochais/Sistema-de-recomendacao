@@ -1,6 +1,9 @@
 import java.util.*;
 /* LEMBRETES
  * O programa tá pegando a palavra 'description' na linha 0 (não precisa)
+ * O programa tá acumulando termos no índice invertido (PROBLEMA RESOLVIDO: Foi necessário resetar os TAD's)
+ * O programa tá retornando o mesmo valor de relevÂncia independentemente do termo e do número de termos (PROBLEMA RESOLVIDO: contador mal implementado)
+ * O programa não tá resetando o TAD ou o índice ao calcular a relevância, (possível solução: passar o novo TAD pra relevancia ao construir indice).
  * */
 
 public class Main {
@@ -15,12 +18,11 @@ public class Main {
 
         System.out.println("[AVISO]: Considerando apenas palavras com quantidade de caracteres maior ou igual a " + C);
 
-        // TAD's
         Map<String, ArrayList<ParOcorrenciasID>> hash = new HashMap<>();
         AVLAdaptado avl = new AVLAdaptado();
         RBTreeAdaptado rb = new RBTreeAdaptado();
 
-        // Índices invertidos
+        // Índices invertidos (primeira instância, caso for necessário construir outros o TAD deve ser resetado)
         IndiceInvertidoGeral indice_hash = new IndiceInvertidoGeral(hash);
         IndiceInvertidoGeral indice_avl = new IndiceInvertidoGeral(avl);
         IndiceInvertidoGeral indice_rb = new IndiceInvertidoGeral(rb);
@@ -42,13 +44,13 @@ public class Main {
 
         // Vetor que contém os nomes dos arquivos dos datasets
         String vetor_datasets[] = {"Amazon", "Victoria's Secret", "Btemptd", "Calvin Klein", "Hanky Panky", "American Eagle", "Macy's", "Nordstrom", "Topshop USA"};
-        List<String> lista_datasets = Arrays.asList(vetor_datasets);
+        List<String> lista_datasets = Arrays.asList(vetor_datasets); // Passando vetor para estrutura de lista
 
         // Dataset inicial
         String file_name = "Amazon.csv";
         dataset = arquivo.ler("Datasets/" + file_name);
 
-        String termos[] = {"comfortable", "flattering", "embroidery"};
+        String termos[] = {"comfortable"};
         Double limiar = 0.0;
 
 
@@ -112,6 +114,20 @@ public class Main {
                         System.out.println("[AVISO] Lendo dataset " + lista_datasets.get(op_int - 1) + " e adicionando descrições em uma ArrayList.");
                         dataset = arquivo.ler("Datasets/" + lista_datasets.get(op_int - 1) + ".csv");
                         file_name = lista_datasets.get(op_int - 1);
+
+                        // Permitir que os índices sejam construídos novamente
+                        for (IndiceInvertidoGeral indice : indices) {
+                            indice.setIndiceConstruído(false);
+                            // Resetar todos os índices
+                            indice.limparIndice();
+                        }
+                        for (RelevanciaGeral relevancia : relevancias) {
+                            // Resetar TAD's
+                            relevancia.limparIndice();
+                        }
+
+                        System.out.println("[AVISO] Os índices construídos anteriormente foram resetados.");
+
                         break;
                     }
                 }
@@ -144,7 +160,7 @@ public class Main {
                 while (true) {
                     div();
                     System.out.println("INSERIR LIMIAR PARA RECOMENDAÇÃO");
-                    System.out.print("Novo limiar: ");
+                    System.out.print("Novo limiar (use ponto): ");
                     entrada = input.nextLine();
                     try {
                         limiar = Double.parseDouble(entrada);
@@ -159,32 +175,42 @@ public class Main {
                 int op_int;
                 try {
                     op_int = Integer.parseInt(entrada);
-                } catch (NumberFormatException exception_2) {
+                } catch (NumberFormatException exception_1) {
                     System.out.println("[ERRO] Insira uma opção válida");
                     continue;
                 }
 
                 System.out.println();
 
+                // Aqui ocorre a construção e a impressão do índice
                 for (int i = 0; i < indices.size(); i++) {
                     if ((op_int - 1) == i) {
                         IndiceInvertidoGeral indice = indices.get(i);
 
-                        if(indice.getIndiceConstruido()){
+                        if (indice.getIndiceConstruido()) {
                             indice.printarEstrutura();
-                        }else{
+                        } else {
+                            RelevanciaGeral relevancia = relevancias.get(i);
+
                             inicio = System.currentTimeMillis();
                             indice.construir(dataset);
                             fim = System.currentTimeMillis();
+
+                            // Toda vez que o índice é reconstruído a relevancia deve inicializar uma nova instancia
+                            // Insere o índice invertido do TAD que foi construído na classe relevância
+                            relevancia.setTAD(indice.getIndiceInvertido());
 
                             System.out.println("[Tempo de construção do índice invertido (" + indice.getEstruturaNome() + "): " + (fim - inicio) + "ms]");
                         }
                     }
                 }
+
+                // Aqui ocorre o cálculo da relevância
                 for (int i = indices.size(); i < indices.size() + relevancias.size(); i++) {
                     if ((op_int - 1) == i) {
-                        if(indices.get(i - indices.size()).getIndiceConstruido()){
-                            RelevanciaGeral relevancia = relevancias.get((i - indices.size()));
+                        int i_relevancia = i - indices.size();
+                        if (indices.get(i_relevancia).getIndiceConstruido()) {
+                            RelevanciaGeral relevancia = relevancias.get((i_relevancia));
 
                             inicio = System.currentTimeMillis();
                             relevancia.calcular(termos, dataset);
@@ -192,7 +218,12 @@ public class Main {
 
                             System.out.println("[Termo(s) escolhido(s) para a consulta: " + imprimirTermos(termos) + "]");
                             System.out.println("[Tempo de execução do cálculo (" + relevancia.getEstruturaNome() + "): " + (fim - inicio) + "ms]");
-                        }else{
+
+                            System.out.println("[Pressione ENTER para continuar]");
+                            String stop = input.nextLine();
+                            relevancia.printDescricaoRelevancia(limiar);
+
+                        } else {
                             System.out.println("[AVISO] Para calcular a relevância para este TAD é necessário primeiramente construir o índice invertido.");
                         }
                     }
