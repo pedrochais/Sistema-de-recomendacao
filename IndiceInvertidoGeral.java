@@ -97,27 +97,45 @@ public class IndiceInvertidoGeral {
         }
     }
 
-    public void printarEstrutura() { // Verificar a estrutura
-        if(indice_invertido instanceof Map) System.out.println("Imprimindo índice invertido do Hash");
-        else if(indice_invertido instanceof AVLAdaptado) System.out.println("Imprimindo índice invertido da Árvore AVL");
-        else if(indice_invertido instanceof RBTreeAdaptado) System.out.println("Imprimindo índice invertido da Árvore Rubro-Negra");
+    public void printarEstrutura(ArrayList<String> nomes_produtos, Integer modo) { // Verificar a estrutura
+        if (indice_invertido instanceof Map) System.out.println("Imprimindo índice invertido do Hash");
+        else if (indice_invertido instanceof AVLAdaptado)
+            System.out.println("Imprimindo índice invertido da Árvore AVL");
+        else if (indice_invertido instanceof RBTreeAdaptado)
+            System.out.println("Imprimindo índice invertido da Árvore Rubro-Negra");
         else System.out.println("[printarEstrutura] Não identificou nenhum tipo");
-        for (String key : getKeys()) {
-            System.out.print("{" + key + "}");
-            ArrayList<ParOcorrenciasID> lista = getListPairs(key);
 
-            for (ParOcorrenciasID item : lista) {
-                int id = (Integer) item.getIDProduto();
-                System.out.print(" -> ");
-                System.out.print("(" + item.getOcorrencias() + ", " + id + ")");
+        if (modo == 1) {
+            for (String key : getKeys()) {
+                System.out.print("{" + key + "}");
+                ArrayList<ParOcorrenciasID> lista = getListPairs(key);
+
+                for (ParOcorrenciasID item : lista) {
+                    int id = (Integer) item.getIDProduto();
+                    System.out.print(" -> ");
+                    System.out.print("(" + item.getOcorrencias() + ", " + id + ")");
+                }
+                System.out.println();
             }
-            System.out.println();
+        } else if (modo == 2) {
+            for (String key : getKeys()) {
+                System.out.println("[CHAVE]: " + key);
+                ArrayList<ParOcorrenciasID> lista = getListPairs(key);
+
+                for (ParOcorrenciasID item : lista) {
+                    int id = (Integer) item.getIDProduto();
+                    System.out.println("- [PRODUTO]: " + nomes_produtos.get(id));
+                    System.out.println("- [OCORRENCIAS]: " + item.getOcorrencias());
+                }
+                System.out.println();
+            }
         }
 
-        System.out.println("Quantidade de termos no índice: "+getKeys().size());
+
+        System.out.println("Quantidade de termos no índice: " + getKeys().size());
     }
 
-    public void limparIndice(){
+    public void limparIndice() {
         if (indice_invertido instanceof Map) {
             this.indice_invertido = new HashMap<>();
         } else if (indice_invertido instanceof AVLAdaptado) {
@@ -141,7 +159,7 @@ public class IndiceInvertidoGeral {
         ArrayList<String> keys = new ArrayList<>();
         if (indice_invertido instanceof Map) {
             Map<String, ArrayList<ParOcorrenciasID>> indice = (Map) this.indice_invertido;
-            for(String key : indice.keySet()) keys.add(key);
+            for (String key : indice.keySet()) keys.add(key);
             Collections.sort(keys, Comparator.naturalOrder());
             return keys;
         } else if (indice_invertido instanceof AVLAdaptado) {
@@ -214,7 +232,7 @@ public class IndiceInvertidoGeral {
         return indice_construido;
     }
 
-    public void setIndiceConstruído(boolean bool){
+    public void setIndiceConstruído(boolean bool) {
         this.indice_construido = bool;
     }
 }

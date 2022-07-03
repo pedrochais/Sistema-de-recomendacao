@@ -132,7 +132,7 @@ public class Main {
                         break;
                     }
                 }
-            } else if (entrada.equals("B") || entrada.equals("b")) {
+            } else if (entrada.equals("B") || entrada.equals("b")) { // Inserção dos termos para consulta
                 while (true) {
                     div();
                     System.out.println("INSERIR TERMOS PARA CONSULTA");
@@ -157,7 +157,7 @@ public class Main {
                     break;
 
                 }
-            } else if (entrada.equals("C") || entrada.equals("c")) {
+            } else if (entrada.equals("C") || entrada.equals("c")) { // Inserção do novo limiar
                 while (true) {
                     div();
                     System.out.println("INSERIR LIMIAR PARA RECOMENDAÇÃO");
@@ -189,7 +189,24 @@ public class Main {
                         IndiceInvertidoGeral indice = indices.get(i);
 
                         if (indice.getIndiceConstruido()) {
-                            indice.printarEstrutura();
+                            while(true){
+                                System.out.println("(1). Printar índice invertido com ID do produto");
+                                System.out.println("(2). Printar índice invertido com nome do produto");
+
+                                entrada = input.nextLine();
+
+                                if(entrada.equals("1")){
+                                    indice.printarEstrutura(nomes_produtos, 1);
+                                    break;
+                                }else if(entrada.equals("2")){
+                                    indice.printarEstrutura(nomes_produtos, 2);
+                                    break;
+                                }else{
+                                    System.out.println("[ERRO] Insira uma opção válida");
+                                    continue;
+                                }
+                            }
+
                         } else {
                             RelevanciaGeral relevancia = relevancias.get(i);
 
