@@ -16,36 +16,30 @@ public class RelevanciaGeral {
 
     public void setTAD(Object indice_invertido){
         this.indice_invertido = indice_invertido;
-        if (indice_invertido instanceof Map) {
-            System.out.println("Hash");
-
-        } else if (indice_invertido instanceof AVLAdaptado) {
-            System.out.println("Limpando AVL");
-
-
-        } else if (indice_invertido instanceof RBTreeAdaptado) {
-            System.out.println("Limpando RBTree");
-
-
-        } else {
-            System.out.println("[setTAD] Não identificou nenhum tipo");
-        }
+//        if (indice_invertido instanceof Map) {
+//            System.out.println("Hash");
+//
+//        } else if (indice_invertido instanceof AVLAdaptado) {
+//            System.out.println("Limpando AVL");
+//
+//
+//        } else if (indice_invertido instanceof RBTreeAdaptado) {
+//            System.out.println("Limpando RBTree");
+//
+//
+//        } else {
+//            System.out.println("[setTAD] Não identificou nenhum tipo");
+//        }
     }
 
     public void limparIndice(){
         lista_descricao_relevancia = new HashMap<>(); // Limpar lista onde são guardadas as chaves
         if (indice_invertido instanceof Map) {
-            System.out.println("Limpando tabela Hash");
             this.indice_invertido = new HashMap<>();
-
         } else if (indice_invertido instanceof AVLAdaptado) {
-            System.out.println("Limpando AVL");
             this.indice_invertido = new AVLAdaptado();
-
         } else if (indice_invertido instanceof RBTreeAdaptado) {
-            System.out.println("Limpando RBTree");
             this.indice_invertido = new RBTreeAdaptado();
-
         } else {
             System.out.println("[limparIndice] Não identificou nenhum tipo");
         }
@@ -67,8 +61,6 @@ public class RelevanciaGeral {
             System.out.println("[IndiceInvertidoGeral] Não identificou nenhum tipo");
         }
     }
-
-
 
     public boolean calcular(String termos_consulta[], ArrayList<String> dataset) {
 
@@ -102,7 +94,6 @@ public class RelevanciaGeral {
         ArrayList<Integer> lista_auxiliar = new ArrayList<>();
         // Este bloco será executado quando houver apenas um termo na consulta
         if (termos.length == 1) {
-            System.out.println("INTERSECÇÃO NÃO VAI SER CALCULADA");
             String termo = termos[0];
             for (ParOcorrenciasID par : getListPairs(termo)) { // Para cada par (descrição) associado ao termo será feito o cálculo da relevância
                 int id = (Integer) par.getIDProduto();
@@ -117,7 +108,6 @@ public class RelevanciaGeral {
                 lista_descricao_relevancia.put(id, rel);
             }
         } else {
-            System.out.println("INTERSECÇÃO TA SENDO CALCULADA");
             // Este bloco será executado quando houver dois termos ou mais na consulta
             /*
              * 1. Percorrer todas as listas de todos os termos e verificar se há ID's em comum
@@ -168,60 +158,68 @@ public class RelevanciaGeral {
         return true;
     }
 
-    public void printDescricaoRelevancia(Double limiar) {
+    public void printDescricaoRelevancia(Double limiar) { // Função muito feia
         List<Map.Entry<Integer, Double>> list = new ArrayList<>(this.lista_descricao_relevancia.entrySet());
         list.sort(Map.Entry.comparingByValue());
         ArrayList<Integer> list_id = new ArrayList<>();
         int contador;
-        boolean continuar = false;
+        boolean continuar = true;
 
         System.out.println("\n[Lista completa]");
         contador = 0;
         for (int i = list.size() - 1; i >= 0; i--) {
             System.out.println("ID: " + list.get(i).getKey() + " / Relevância: " + list.get(i).getValue());
-//            contador++;
-//            if(contador == 10){
-//                while(true){
-//                    System.out.println("[AVISO] A lista a ser impressa possui mais de 10 itens ("+(list.size() - 1)+" restantes), deseja continular? (S/N)");
-//                    String entrada = input.nextLine();
-//                    if(entrada.equals("S") || entrada.equals("s")){
-//                        continuar = true;
-//                        break;
-//                    }else if (entrada.equals("N") || entrada.equals("n")){
-//                        continuar = false;
-//                        break;
-//                    }
-//                }
-//            }
-//            if (!continuar) break;
+
+            contador++;
+            if(contador == 10){
+                while(true){
+                    System.out.println("[AVISO] A lista a ser impressa possui mais de 10 itens ("+(list.size() - 1)+" restante(s)), deseja continular? (S/N)");
+                    String entrada = input.nextLine();
+                    if(entrada.equals("S") || entrada.equals("s")){
+                        continuar = true;
+                        break;
+                    }else if (entrada.equals("N") || entrada.equals("n")){
+                        continuar = false;
+                        break;
+                    }
+                }
+            }
+            if (!continuar) break;
         }
 
         System.out.println("\n[Lista considerando limiar = "+limiar+"]");
+        continuar = true;
         contador = 0;
         for (int i = list.size() - 1; i >= 0; i--) {
             if (list.get(i).getValue() > limiar) {
-                System.out.println("ID: " + list.get(i).getKey() + " / Relevância: " + list.get(i).getValue());
-                list_id.add((Integer)list.get(i).getKey());
+                list_id.add((Integer) list.get(i).getKey());
             }
-//            contador++;
-//            if(contador == 10){
-//                while(true){
-//                    System.out.println("[AVISO] A lista a ser impressa possui mais de 10 itens ("+(list.size() - 1)+" restantes), deseja continular? (S/N)");
-//                    String entrada = input.nextLine();
-//                    if(entrada.equals("S") || entrada.equals("s")){
-//                        continuar = true;
-//                        break;
-//                    }else if (entrada.equals("N") || entrada.equals("n")){
-//                        continuar = false;
-//                        break;
-//                    }
-//                }
-//            }
-//            if (!continuar) break;
+        }
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (list.get(i).getValue() > limiar) {
+                System.out.println("ID: " + list.get(i).getKey() + " / Relevância: " + list.get(i).getValue());
+            }
+
+            contador++;
+            if(contador == 10){
+                while(true){
+                    System.out.println("[AVISO] A lista a ser impressa possui mais de 10 itens ("+(list.size() - 1)+" restante(s)), deseja continular? (S/N)");
+                    String entrada = input.nextLine();
+                    if(entrada.equals("S") || entrada.equals("s")){
+                        continuar = true;
+                        break;
+                    }else if (entrada.equals("N") || entrada.equals("n")){
+                        continuar = false;
+                        break;
+                    }
+                }
+            }
+            if (!continuar) break;
         }
 
         Collections.sort(list_id);
         System.out.println("\n[Lista ordenada dos ID's recomendados]");
+
         for (Integer item : list_id){
             System.out.print(item+", ");
         }

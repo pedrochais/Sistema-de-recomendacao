@@ -119,17 +119,11 @@ public class IndiceInvertidoGeral {
 
     public void limparIndice(){
         if (indice_invertido instanceof Map) {
-            System.out.println("Limpando tabela Hash");
             this.indice_invertido = new HashMap<>();
-
         } else if (indice_invertido instanceof AVLAdaptado) {
-            System.out.println("Limpando AVL");
             this.indice_invertido = new AVLAdaptado();
-
         } else if (indice_invertido instanceof RBTreeAdaptado) {
-            System.out.println("Limpando RBTree");
             this.indice_invertido = new RBTreeAdaptado();
-
         } else {
             System.out.println("[limparIndice] Não identificou nenhum tipo");
         }

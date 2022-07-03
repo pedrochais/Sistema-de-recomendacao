@@ -81,9 +81,7 @@ public class Main {
             }
             String entrada = input.nextLine();
 
-            /* Opção para escolher qual dataset será usado
-             * */
-            if (entrada.equals("A") || entrada.equals("a")) {
+            if (entrada.equals("A") || entrada.equals("a")) { // Escolher qual dataset será usado
                 while (true) {
                     contador_opcoes = 1;
                     div();
