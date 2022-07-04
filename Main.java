@@ -1,10 +1,4 @@
 import java.util.*;
-/* LEMBRETES
- * O programa tá pegando a palavra 'description' na linha 0 (não precisa)
- * O programa tá acumulando termos no índice invertido (PROBLEMA RESOLVIDO: Foi necessário resetar os TAD's)
- * O programa tá retornando o mesmo valor de relevÂncia independentemente do termo e do número de termos (PROBLEMA RESOLVIDO: contador mal implementado)
- * O programa não tá resetando o TAD ou o índice ao calcular a relevância, (possível solução: passar o novo TAD pra relevancia ao construir indice).
- * */
 
 public class Main {
     public static final int C = 10;
@@ -220,7 +214,6 @@ public class Main {
                             fim = System.currentTimeMillis();
 
                             // Toda vez que o índice é reconstruído a relevancia deve inicializar uma nova instancia
-                            // Insere o índice invertido do TAD que foi construído na classe relevância
                             relevancia.setTAD(indice.getIndiceInvertido());
 
                             System.out.println("[Tempo de construção do índice invertido (" + indice.getEstruturaNome() + "): " + (fim - inicio) + "ms]");

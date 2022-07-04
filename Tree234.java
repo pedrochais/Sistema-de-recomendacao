@@ -176,7 +176,6 @@ public class Tree234 {
         }
     }
 
-
     /*  LOCALIZANDO O NÓ QUE VAI SER INSERIDO O DADO
         Pega o proximo filho do no atual dado o valor a ser inserido:
         - Se o valor for menor que o valor que esta no no atual, pega o primeiro filho do no (nó mais a esquerda)
@@ -193,9 +192,7 @@ public class Tree234 {
         return noAtual.pegaFilho(j);
     }
 
-
     // --- PROCESSO DE SPLIT FEITO QUANDO FOR INSERIR UM ITEM EM UM NÓ QUE JÁ ESTÁ CHEIO ---
-
     public void split(BTreeNode noCheio) {
         dadoItem itemPenultimo, itemUltimo;           //Dados do nó cheio que serão retirados do nó (último e penúltimo)
         BTreeNode pai, filho2, filho3;
@@ -293,15 +290,12 @@ public class Tree234 {
         }
     }
 
-
-
     private ArrayList<String> keys = new ArrayList<>();
 
     public void getKeys() {
         keys.clear();
         getKeys(root, 0, 0);
     }
-
 
     private void getKeys(BTreeNode thisNode, int nivel, int childNumber) {        //Impressão de cada nó com seu nível na árvore e quantidade de filhos que ele possui
         for (String k : thisNode.getKeysNode()) {// Pega cada item do nó e joga na lista principal 'keys'

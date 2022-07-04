@@ -62,20 +62,6 @@ public class RBTreeAdaptado {
         }
     }
 
-    // Identificar as chaves em pre-ordem
-    /*
-    public void preorder() {
-        preorder(raiz);
-    }
-
-    private void preorder(RBNode node) {
-        if (node != TNULL) {
-            this.keys.add(node.chave);
-            preorder(node.left);
-            preorder(node.right);
-        }
-    }
-    */
     // Identificar as chaves em ordem
     public void inorder() {
         inorder(raiz);
@@ -108,11 +94,6 @@ public class RBTreeAdaptado {
                  * */
                 noAtual = noAtual.left;
             }
-        }
-        if (noAtual != TNULL) {
-            //System.out.println("Nó " +noAtual.chave+ " encontrado");
-        } else {
-            //System.out.println("Nó nao encontrado na arvore");
         }
         return noAtual;
     }
@@ -148,7 +129,6 @@ public class RBTreeAdaptado {
         } else if (node.chave.compareTo(y.chave) > 0) {
             y.right = node;
         } else {
-            //System.out.println("Nó já existe na árvore");
             return;
         }
 

@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 public class RelevanciaGeral {
     private Map<Integer, Double> lista_descricao_relevancia = new HashMap<>();
     Scanner input = new Scanner(System.in);
-    private int quantidade_produtos_dataset_geral; // [LEMBRETE] Está considerando a linha com a identificação das colunas
+    private int quantidade_produtos_dataset_geral;
     private int quantidade_produtos_dataset_atual;
     private String estrutura_nome;
     private Object indice_invertido;
@@ -53,15 +53,7 @@ public class RelevanciaGeral {
     }
 
     public boolean calcular(String termos_consulta[], ArrayList<String> dataset) {
-
-//        for (String t : termos_consulta){
-//            System.out.println("Termo: "+t);
-//        }
-//
-//        System.out.println(termos_consulta.length);
         this.lista_descricao_relevancia = new HashMap<>();
-
-        //MODIFICAÇÕES FEITAS ATÉ AQUI
 
         // Laço para verificar se o termo existe no índice invertido
         ArrayList<String> termos_validos = new ArrayList<>();
@@ -90,10 +82,6 @@ public class RelevanciaGeral {
                 inserirDados(dataset.size() - 1, getListPairs(termo).size());
 
                 double rel = calcularRelevancia(dataset.get(id), termos);
-
-//                System.out.printf("Relevância do elemento de ID %d: %.3f\n", id, rel);
-//                System.out.println("Frase: " + dataset.get(id));
-//                System.out.println();
 
                 lista_descricao_relevancia.put(id, rel);
             }
@@ -137,10 +125,6 @@ public class RelevanciaGeral {
                 inserirDados(dataset.size() - 1, lista_auxiliar.size()); // Determinando o valor para N e d
                 double rel = calcularRelevancia(dataset.get(id_produto), termos);
 
-//                System.out.printf("Relevância do elemento de ID %d: %.3f\n", id_produto, rel);
-//                System.out.println("Frase: " + dataset.get(id_produto));
-//                System.out.println();
-
                 lista_descricao_relevancia.put(id_produto, rel);
             }
         }
@@ -151,49 +135,14 @@ public class RelevanciaGeral {
     public void printDescricaoRelevancia(ArrayList<String> nomes_produtos, Double limiar) {
         List<Map.Entry<Integer, Double>> list = new ArrayList<>(this.lista_descricao_relevancia.entrySet());
         list.sort(Map.Entry.comparingByValue());
-        ArrayList<Integer> list_id = new ArrayList<>();
-        int contador;
-        boolean continuar = true;
 
         System.out.println("\nLista de recomendações (limiar = "+limiar+")\n");
-        continuar = true;
-        contador = 0;
         for (int i = list.size() - 1; i >= 0; i--) {
             if (list.get(i).getValue() > limiar) {
-                list_id.add((Integer) list.get(i).getKey());
-            }
-        }
-        for (int i = list.size() - 1; i >= 0; i--) {
-            if (list.get(i).getValue() > limiar) {
-                //System.out.println("ID: " + list.get(i).getKey() + " / Relevância: " + list.get(i).getValue());
                 System.out.println("[PRODUTO]: "+nomes_produtos.get(list.get(i).getKey()));
                 System.out.println("[RELEVÂNCIA]: "+list.get(i).getValue()+"\n");
             }
-
-            contador++;
-            if(contador == 10){
-                while(true){
-                    System.out.println("[AVISO] A lista a ser impressa possui mais de 10 itens ("+(list.size() - 1)+" restante(s)), deseja continular? (S/N)");
-                    String entrada = input.nextLine();
-                    if(entrada.equals("S") || entrada.equals("s")){
-                        continuar = true;
-                        break;
-                    }else if (entrada.equals("N") || entrada.equals("n")){
-                        continuar = false;
-                        break;
-                    }
-                }
-            }
-            if (!continuar) break;
         }
-
-        Collections.sort(list_id);
-        System.out.println("\n[Lista ordenada dos ID's recomendados]");
-
-        for (Integer item : list_id){
-            System.out.print(item+", ");
-        }
-        System.out.println();
     }
 
     private double calcularRelevancia(String descricao, String termos_consulta[]) {
@@ -207,11 +156,8 @@ public class RelevanciaGeral {
         String palavras[] = descricao.split(" ");
         int quantidade_palavras_distintas = identificarNumeroDePalavrasDistintas(conteudo);
 
-//        System.out.println(termos_consulta.length);
         for (int i = 0; i < termos_consulta.length; i++) {
             double peso = calcularPesoTermo(conteudo, termos_consulta[i]);
-            //System.out.println("Cálculo do peso ("+termos_consulta[i]+"): "+peso);
-            //soma_pesos += calcularPesoTermo(descricao, termos_consulta[i]);
             soma_pesos += peso;
         }
 
@@ -220,7 +166,6 @@ public class RelevanciaGeral {
 
     private double calcularPesoTermo(String descricao, String termo) {
         int quantidade_ocorrencias = ocorrenciasTermo(descricao, termo);
-        //System.out.println("Quantidade de ocorrencias do termo na frase: "+quantidade_ocorrencias);
         return (quantidade_ocorrencias * log(2, quantidade_produtos_dataset_geral) / quantidade_produtos_dataset_atual);
     }
 
@@ -244,8 +189,6 @@ public class RelevanciaGeral {
         }
 
         int palavras_distintas = palavras_identificadas.split(" ").length;
-
-        //System.out.println("Número de palavras distintas na frase: "+palavras_distintas);
 
         return palavras_distintas;
     }
@@ -280,11 +223,6 @@ public class RelevanciaGeral {
 
     public void getDados() {
         System.out.println("N = " + this.quantidade_produtos_dataset_geral + " / d = " + this.quantidade_produtos_dataset_atual);
-
-    }
-
-    private double log(double base, double valor) {
-        return Math.log(valor) / Math.log(base);
     }
 
     public String getEstruturaNome() {
@@ -293,6 +231,10 @@ public class RelevanciaGeral {
 
     public void resetarIndice(Object indice_invertido){
         this.indice_invertido = indice_invertido;
+    }
+
+    private double log(double base, double valor) {
+        return Math.log(valor) / Math.log(base);
     }
 }
 

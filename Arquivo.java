@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 public class Arquivo {
     public ArrayList<String> ler(String file_name, int modo) {
         ArrayList<String> itens = new ArrayList<>();
-//        int limitador = 697;
 
         try {
             FileReader file = new FileReader(file_name);
@@ -24,7 +23,7 @@ public class Arquivo {
 
                 if (modo == 0) { // Pegar nome do produto
                     itens.add(splitted[1]);
-                } else if (modo == 1) {
+                } else if (modo == 1) { // Pegar a descrição do produto
                     if (matcher.find()) {
                         // Pega o conteúdo entre aspas duplas
                         String description = matcher.group(1);
@@ -36,10 +35,6 @@ public class Arquivo {
                 }
 
                 linha = reader.readLine();
-
-                // Limitar quantidade de produtos sendo impressos
-//                limitador--;
-//                if(limitador == 0) break;
             }
 
             file.close();

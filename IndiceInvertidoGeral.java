@@ -24,8 +24,6 @@ public class IndiceInvertidoGeral {
     }
 
     public void construir(ArrayList<String> dataset) {
-
-        //this.indice_invertido = indice_invertido;
         // Para cada elemento (string) que estiver no dataset
         /*
          * 1. Todos os caracteres da string deverão ser minúsculos
@@ -35,7 +33,6 @@ public class IndiceInvertidoGeral {
         for (int i = 0; i < dataset.size(); i++) {
             String conteudo;
             conteudo = dataset.get(i).toLowerCase(Locale.ROOT); // (1)
-            //conteudo = conteudo.replaceAll("[-.,+=*&:®…•\u00AD–—’;%$#@|!?_\"\']", ""); // (2)
             conteudo = conteudo.replaceAll(Main.regex, ""); // (2)
             conteudo = conteudo.replaceAll(" ", " "); // (2)
             conteudo = conteudo.replaceAll("/", " "); // (2)
@@ -154,14 +151,6 @@ public class IndiceInvertidoGeral {
         }
     }
 
-    public String getTermos() {
-        return termos;
-    }
-
-    public Object getIndiceInvertido() {
-        return this.indice_invertido;
-    }
-
     private ArrayList<String> getKeys() {
         ArrayList<String> keys = new ArrayList<>();
         if (indice_invertido instanceof Map) {
@@ -219,9 +208,9 @@ public class IndiceInvertidoGeral {
             return indice.busca(termo).getPares();
         } else if (indice_invertido instanceof Tree234) {
             Tree234 indice = (Tree234) this.indice_invertido;
-            if(indice.busca(termo) != -1){
+            if (indice.busca(termo) != -1) {
                 return indice.getNoEncontrado().getItemEncontrado().getPares();
-            }else{
+            } else {
                 return null;
             }
         } else {
@@ -254,6 +243,14 @@ public class IndiceInvertidoGeral {
 
     public boolean getIndiceConstruido() {
         return indice_construido;
+    }
+
+    public String getTermos() {
+        return termos;
+    }
+
+    public Object getIndiceInvertido() {
+        return this.indice_invertido;
     }
 
     public void setIndiceConstruído(boolean bool) {
